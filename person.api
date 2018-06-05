@@ -1,3 +1,5 @@
+
+
 import data
 import backend
 import http
@@ -76,10 +78,45 @@ connect_to_db : database {
 
 
 
-backend : person (request : http_request) {
-  database : database
 
-  person_query : http_query = make_query_for(person, request)
+backend : bool (request : create_query) {
+  result = query(person_query, database)
+  frontend(result)
+}
+
+backend : person (request : create_query) {
+  result = query(person_query, database)
+  frontend(result)
+}
+
+backend : food (request : get_query) {
+  result = query(person_query, database)
+  frontend(result)
+}
+
+backend : food (request : create_query) {
+  result = query(person_query, database)
+  frontend(result)
+}
+
+
+
+
+backend : bool (request : create_request) {
+  database : database
+  person_query : create_query = make_query_for(person, request)
+
+  if !person_query {
+    frontend( error(MalformedQuery) )
+  }
+
+  result = query(person_query, database)
+  frontend(result)
+}
+
+backend : person (request : get_request) {
+  database : database
+  person_query : get_query = make_query_for(person, request)
 
   if !person_query {
     frontend( error(MalformedQuery) )
