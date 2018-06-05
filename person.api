@@ -1,0 +1,117 @@
+import data
+import backend
+import http
+import error
+
+
+data person {
+  name        : string,
+  age         : integer,
+  weight      : float,
+  fav_foods[] : food
+}
+
+data food {
+  Type : food_type,
+  name : string
+}
+
+enum food_type {
+  FoodType_Meat,
+  FoodType_Vegetable,
+  FoodType_Dairy,
+  FoodType_Grain
+}
+
+
+
+define database {
+  database = connect_to_db()
+
+  // NOTE(Jesse): There is an open question question here of what the runtime
+  // should be doing in terms of how it deals with these table creation statements.
+  //
+  // Traditionally they're run as database migrations, however I would prefer
+  // if the user literally never has to run a migration.  The user just adds
+  // code like the following and the compiler or runtime decides when to add
+  // new tables.
+
+  // Option 1) The compiler hashes the database schema and updates the tables
+  // when that hashed value changes.  This would be awesome.  The downside is
+  // users would have to compile the source code on each environment in order
+  // to update the app.  I would prefer it if they could ship pre-compiled
+  // binaries, or at least self-contained zip files.
+
+  // Option 2) The runtime is responsible for updating the database.  This would
+  // result in (extremely marginally) worse runtime perf, but would probably be
+  // much easier to implement.  It also has the added upside of being able to
+  // have a user ship a single package (zip? binary?) to another environment
+  // and have it 'just work'.
+
+  database.people = table_for( database, person )
+  database.foods = table_for( database, food )
+
+  // NOTE(Jesse): The compiler should figure out and complain if person.fav_foods
+  // is not an array since it has a one to many relationship
+  database.people_foods = one_to_many( database, person, food ) // Create linking table for people and their favorite foods
+
+  return database
+}
+
+
+
+connect_to_db : database {
+  database : database = connect(read_env("DB_NAME"),
+                                read_env("DB_USER"),
+                                read_env("DB_PASSWORD"),
+                                DatabaseType_MYSQL )
+
+  if !database {
+    frontend( error(DatabaseConnectionError) )
+  }
+
+  return database
+}
+
+
+
+
+backend : person (request : http_request) {
+  database : database
+
+  person_query : http_query = make_query_for(person, request)
+
+  if !person_query {
+    frontend( error(MalformedQuery) )
+  }
+
+  result = query(person_query, database)
+  frontend(result)
+}
+
+frontend (P : person) {
+  <h1>P.name</h1>
+  <ul>
+  foreach P.fav_foods as food {
+    <li>food</li>
+  }
+  </ul>
+}
+
+frontend (error : malformed_query) {
+  // TODO(Jesse): The frontend passed the backend an invalid query structure.
+}
+
+frontend (error : database_connection_error) {
+  // TODO(Jesse): The database could not be connected to
+}
+
+frontend (unknown : T) {
+  // TODO(Jesse): Basically an error state.  The backend gave us something we
+  // have no idea what to do with.
+}
+
+
+
+
+
