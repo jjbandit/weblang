@@ -1,36 +1,8 @@
-@import data
 @import error
 @import database
 @import env
 
-
-@data
-@unique_id
-@paginated
-person {
-  name    : string,
-  age     : int,
-  weight  : float,
-  foods[] : food
-}
-
-
-@data
-@unique_id
-food {
-  type : food_type,
-  name : string
-}
-
-
-@enum
-food_type {
-  FoodType_Meat,
-  FoodType_Vegetable,
-  FoodType_Dairy,
-  FoodType_Grain
-}
-
+@import person.data
 
 @database
 database

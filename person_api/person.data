@@ -1,0 +1,26 @@
+@import data
+
+@data
+@paginated
+person {
+  name    : string,
+  age     : int,
+  weight  : float,
+  foods[] : food
+}
+
+
+@data
+food {
+  type : food_type,
+  name : string
+}
+
+
+@enum
+food_type {
+  FoodType_Meat,
+  FoodType_Vegetable,
+  FoodType_Dairy,
+  FoodType_Grain
+}
