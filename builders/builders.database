@@ -1,0 +1,27 @@
+@import error
+@import database
+@import env
+
+@import builders.data
+
+@database
+builders_database
+{
+  @comment(jesse) { Surprisingly we don't need anything here }
+}
+
+@constructor
+builders_database {
+  result = connect(read_env("DB_NAME"),
+                   read_env("DB_USER"),
+                   read_env("DB_PASSWORD"),
+                   DatabaseType_MYSQL )
+
+  if !result { error(database_connection_error) }
+  return result
+}
+
+
+
+
+

@@ -6,14 +6,18 @@
 
 @import person/person.data
 
+
 @data
+@create_table_in(builders_database)
 section_panel {
   image_url : string
   caption   : string
   ordinal   : uint
 }
 
+
 @data
+@create_table_in(builders_database)
 project {
   title               : string
   location_coordinate : v2
@@ -22,6 +26,15 @@ project {
   services            : service[]
   associated_projects : project[]
 }
+
+
+@data
+@table_for(builders_database)
+team_member {
+  @using (person)
+}
+
+
 
 @union
 service {
@@ -37,6 +50,4 @@ market {
   Market_HighTech           : "High Tech Markets"
   Market_Retail             : "Retail"
 }
-
-@data person team_member
 
