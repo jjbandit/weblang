@@ -1,0 +1,42 @@
+
+@import data
+@import error
+@import database
+@import env
+
+@import person/person.data
+
+@data
+section_panel {
+  image_url : string
+  caption   : string
+  ordinal   : uint
+}
+
+@data
+project {
+  title               : string
+  location_coordinate : v2
+  budget              : u32
+  core_market         : market
+  services            : service[]
+  associated_projects : project[]
+}
+
+@union
+service {
+  Service_Preconstruction     : "Pre-construction Services"
+  Service_GeneralConstruction : "General Construction"
+  Service_DesignBuild         : "Design Build"
+}
+
+@union
+market {
+  Market_CorporateFinancial : "Corporate/Financial Markets"
+  Market_CorporateCampus    : "Corporate Campus"
+  Market_HighTech           : "High Tech Markets"
+  Market_Retail             : "Retail"
+}
+
+@data person team_member
+
