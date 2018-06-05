@@ -1,0 +1,8 @@
+@import query
+
+get ( :person, database :database) -> food[] {
+  query = make_query(request, required(person.id))
+  run_query(query, database.people_food)
+}
+
+

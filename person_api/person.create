@@ -1,0 +1,11 @@
+@import query
+
+@cms
+@endpoint
+(query : create_query, database : database) -> query_result
+{
+  requirements = require(name, age, weight) & optional(foods)
+  query = make_query(request, requirements)
+  run_query(query, database.people)
+}
+

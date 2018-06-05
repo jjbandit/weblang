@@ -1,0 +1,12 @@
+@import http_response
+
+@import person.get
+@import person.create
+@import person.database
+
+@entrypoint
+main (request : request_type) {
+  database : database
+  http_response(endpoint(request, database))
+}
+

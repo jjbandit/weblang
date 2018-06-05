@@ -1,0 +1,9 @@
+@import query
+
+@cms
+@endpoint
+(query : create_request, database : database) -> query_result {
+  query = make_query(request, require(name, type))
+  run_query(query, database.food)
+}
+

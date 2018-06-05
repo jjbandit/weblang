@@ -1,0 +1,90 @@
+@import data
+@import error
+@import database
+@import env
+
+
+@data
+@unique_id
+@paginated
+person {
+  name    : string,
+  age     : int,
+  weight  : float,
+  foods[] : food
+}
+
+
+@data
+@unique_id
+food {
+  type : food_type,
+  name : string
+}
+
+
+@enum
+food_type {
+  FoodType_Meat,
+  FoodType_Vegetable,
+  FoodType_Dairy,
+  FoodType_Grain
+}
+
+
+@database
+database
+{
+  people         : table(person)
+  food           : table(food)
+  favorite_foods : one_to_many(people, food)
+}
+
+
+@jesse
+@comment
+@see @database database
+{
+  There is an open question question here of what the runtime
+  should be doing in terms of how it deals with these table creation statements
+
+  Traditionally they're run as database migrations, however I would prefer
+  if the user literally never has to run a migration.  The user just adds
+  code like the following and the compiler or runtime decides when to add
+  new tables.
+
+  Option 1) Compile Time Tables
+  The compiler hashes the database schema and updates the tables when that
+  hashed value changes.  The downside is users would have to compile the
+  source code on each environment in order to update the database.  I would
+  prefer it if users could ship pre-compiled binaries, or at least
+  self-contained zip files, which brings us to :
+
+  Option 2) Runtime Tables
+  The runtime is responsible for updating the database.  This would result
+  in (extremely marginally) worse runtime perf, but would probably be much
+  easier to implement.  It also has the added upside of being able to have a
+  user ship a single package (zip? binary?) to another environment and have
+  it 'just work'.
+
+  I think implementing Option 2 would be the best way to start because it's
+  the most flexible in terms of giving control to the users.  Maybe it can
+  be implemented in such a way that the runtime performance impact is so
+  minimal that it's strictly better than Option 1
+}
+
+@constructor
+database {
+  result = connect(read_env("DB_NAME"),
+                   read_env("DB_USER"),
+                   read_env("DB_PASSWORD"),
+                   DatabaseType_MYSQL )
+
+  if !result { error(database_connection_error) }
+  return result
+}
+
+
+
+
+

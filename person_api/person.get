@@ -1,0 +1,16 @@
+@import query
+
+@endpoint
+get (request : get_request, database : database) -> person {
+  query = make_query(request, require(id))
+  run_query(person_query, database.people)
+}
+
+@endpoint
+get (request : get_request, database : database) -> person[] {
+  requirements = optional(name, age, weight, foods)
+  query = make_query(request, requirements)
+  run_query(query, database.people)
+}
+
+
