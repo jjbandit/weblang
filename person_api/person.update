@@ -1,0 +1,11 @@
+
+@import query
+
+@cms
+@endpoint
+( P :person, query :create_query, database :database) -> query_result
+{
+  query = update_query(P.id, request, optional(name, age, weight, foods))
+  run_query(query, database.people)
+}
+

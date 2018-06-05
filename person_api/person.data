@@ -1,6 +1,5 @@
 @import data
 
-@data
 @paginated
 person {
   name    : string,
@@ -10,7 +9,6 @@ person {
 }
 
 
-@data
 food {
   type : food_type,
   name : string

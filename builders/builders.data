@@ -7,8 +7,11 @@
 @import person/person.data
 
 
-@data
 @create_table_in(builders_database)
+@create require(all)
+@read()
+@update(id) optional(all)
+@destroy(id)
 section_panel {
   image_url : string
   caption   : string
@@ -16,7 +19,6 @@ section_panel {
 }
 
 
-@data
 @create_table_in(builders_database)
 project {
   title               : string
@@ -28,7 +30,6 @@ project {
 }
 
 
-@data
 @table_for(builders_database)
 team_member {
   @using (person)
